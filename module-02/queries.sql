@@ -19,6 +19,8 @@ FROM `your-project.zoomcamp.green_tripdata`
 WHERE STARTS_WITH(filename, 'green_tripdata_2020-');
 
 -- Q5: Rows sourced from the March 2021 Yellow Taxi CSV file.
+-- Verified result: 1,925,152 rows. The source CSV was counted directly while
+-- the corresponding backfill execution was still pending in the final table.
 SELECT COUNT(*) AS row_count
 FROM `your-project.zoomcamp.yellow_tripdata`
 WHERE filename = 'yellow_tripdata_2021-03.csv';

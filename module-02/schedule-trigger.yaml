@@ -1,0 +1,9 @@
+# Homework-specific Schedule trigger excerpt.
+# The full taxi pipeline is maintained in the upstream course repository.
+triggers:
+  - id: yellow_monthly
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 9 1 * *"
+    timezone: America/New_York
+    inputs:
+      taxi: yellow
