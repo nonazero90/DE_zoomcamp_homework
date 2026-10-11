@@ -6,23 +6,26 @@ verified.
 
 ## Load the source parquet files
 
-The loader streams the January–June 2024 Yellow Taxi parquet files to an
-existing Google Cloud Storage bucket. It uses the active Google Cloud CLI
-account and requires the bucket name at runtime, so no project ID, bucket name,
-or credential file is stored in this repository.
+The loader downloads the January–June 2024 Yellow Taxi parquet files into a
+temporary directory and uploads them to an existing Google Cloud Storage
+bucket. It uses Application Default Credentials and requires the bucket name at
+runtime, so no project ID, bucket name, or credential file is stored here.
 
 ```bash
-bash load_yellow_taxi_data.sh YOUR_BUCKET_NAME
+uv sync
+uv run python load_yellow_taxi_data.py --bucket YOUR_BUCKET_NAME
 ```
 
-By default, objects are written below `module-03/`. Pass a second argument to
-use another prefix. Re-running the command skips objects that already exist.
+By default, objects are written below `module-03/`. Pass `--prefix NAME` to use
+another prefix. Re-running the command skips objects that already exist. Local
+downloads are removed automatically when the process exits normally.
 
 Prerequisites:
 
-- `curl`;
-- Google Cloud CLI (`gcloud`);
+- Python 3.13 or newer;
+- `uv`;
 - an existing GCS bucket;
-- an active `gcloud` account with permission to read and create objects.
+- Application Default Credentials with permission to read and create objects.
 
-Successful completion lists all six destination objects.
+Successful completion prints one `Uploaded gs://...` or `Exists, skipping`
+line for each of the six monthly files.
