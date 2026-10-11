@@ -29,3 +29,6 @@ Prerequisites:
 
 Successful completion prints one `Uploaded gs://...` or `Exists, skipping`
 line for each of the six monthly files.
+
+Verified on 2026-10-12: all six monthly objects were present in GCS, totaling
+341,935,880 bytes (326.10 MiB). The bucket name is intentionally omitted.
