@@ -13,7 +13,7 @@ runtime, so no project ID, bucket name, or credential file is stored here.
 
 ```bash
 uv sync
-uv run python load_yellow_taxi_data.py --bucket YOUR_BUCKET_NAME
+.venv/bin/python load_yellow_taxi_data.py --bucket YOUR_BUCKET_NAME
 ```
 
 By default, objects are written below `module-03/`. Pass `--prefix NAME` to use
