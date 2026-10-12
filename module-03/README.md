@@ -85,3 +85,14 @@ The pre-execution estimates were:
 
 The SQL uses a half-open timestamp range ending at `2024-03-16`, so the range
 includes the entire day of March 15 rather than only midnight at its start.
+
+### Question 7 — External table storage
+
+The row data referenced by the external table remains in the **GCP Bucket**.
+BigQuery stores the table definition and source URI metadata.
+
+### Question 8 — Clustering best practices
+
+**False.** Clustering is useful when a sufficiently large table is frequently
+filtered or aggregated using the clustering columns. It is not automatically
+beneficial for every table or query pattern.
