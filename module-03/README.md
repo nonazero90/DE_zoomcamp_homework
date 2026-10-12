@@ -32,3 +32,40 @@ line for each of the six monthly files.
 
 Verified on 2026-10-12: all six monthly objects were present in GCS, totaling
 341,935,880 bytes (326.10 MiB). The bucket name is intentionally omitted.
+
+## BigQuery setup
+
+The source files were registered as a Parquet external table. A separate
+non-partitioned, non-clustered managed table was then created from it. The
+reproducible SQL is in [`queries.sql`](queries.sql), with public-safe
+placeholders for the project and bucket names.
+
+Verification confirmed that the external table referenced the six GCS files
+without storing managed bytes in BigQuery. The regular table was stored in
+BigQuery and contained 20,332,093 rows.
+
+## Verified answers
+
+### Question 1 — Counting records
+
+The January–June 2024 dataset contains **20,332,093 rows**.
+
+### Question 2 — Data read estimation
+
+The BigQuery estimates shown before execution were:
+
+- external table: **0 B**;
+- managed table: **155.12 MB**.
+
+The external-table value is a lower-bound planning estimate, not evidence that
+an executed query reads no data from GCS.
+
+### Question 3 — Columnar storage
+
+BigQuery scans only the columns requested by a query. Selecting both
+`PULocationID` and `DOLocationID` therefore reads more data than selecting only
+`PULocationID`. Specific UI estimates were not recorded for this question.
+
+### Question 4 — Zero-fare trips
+
+There are **8,333 rows** where `fare_amount = 0`.
