@@ -69,3 +69,19 @@ BigQuery scans only the columns requested by a query. Selecting both
 ### Question 4 — Zero-fare trips
 
 There are **8,333 rows** where `fare_amount = 0`.
+
+### Question 5 — Partitioning and clustering
+
+The optimized managed table is partitioned by the date of
+`tpep_dropoff_datetime` and clustered by `VendorID`. This matches the stated
+query pattern: filtering by drop-off date and ordering by vendor.
+
+### Question 6 — Partition benefits
+
+The pre-execution estimates were:
+
+- non-partitioned table: **310.24 MB**;
+- partitioned and clustered table: **26.84 MB**.
+
+The SQL uses a half-open timestamp range ending at `2024-03-16`, so the range
+includes the entire day of March 15 rather than only midnight at its start.
