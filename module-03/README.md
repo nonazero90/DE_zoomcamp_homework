@@ -96,3 +96,13 @@ BigQuery stores the table definition and source URI metadata.
 **False.** Clustering is useful when a sufficiently large table is frequently
 filtered or aggregated using the clustering columns. It is not automatically
 beneficial for every table or query pattern.
+
+### Question 9 — `COUNT(*)` scan estimate
+
+An unfiltered `COUNT(*)` on the managed table estimated **0 B**. BigQuery can
+use the table's stored row-count metadata without reading a data column.
+
+This optimization does not mean every `COUNT(*)` query scans zero bytes. For
+example, `COUNT(*)` with `WHERE VendorID IS NOT NULL` must read `VendorID` to
+decide which rows satisfy the predicate. Likewise, `COUNT(VendorID)` must
+inspect that column because it counts only non-NULL values.

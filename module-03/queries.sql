@@ -57,3 +57,8 @@ SELECT DISTINCT VendorID
 FROM `YOUR_PROJECT_ID.zoomcamp.yellow_tripdata_2024_partitioned_clustered`
 WHERE tpep_dropoff_datetime >= TIMESTAMP('2024-03-01')
   AND tpep_dropoff_datetime < TIMESTAMP('2024-03-16');
+
+-- Question 9: BigQuery can answer this unfiltered managed-table row count
+-- from table metadata, so the pre-execution estimate is 0 B.
+SELECT COUNT(*) AS record_count
+FROM `YOUR_PROJECT_ID.zoomcamp.yellow_tripdata_2024_non_partitioned`;
