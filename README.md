@@ -8,8 +8,9 @@ Public, reproducible solutions and verification artifacts from the
 - [Module 1 — Docker, SQL, and Terraform](module-01/README.md)
 - [Module 2 — Workflow Orchestration](module-02/README.md)
 - [Module 3 — Data Warehousing and BigQuery](module-03/README.md)
+- [Module 4 — Analytics Engineering with dbt](module-04/README.md)
 
-Module 4 and later work will be added incrementally as each verified homework
+Module 5 and later work will be added incrementally as each verified homework
 milestone is completed.
 
 ## Repository boundaries
