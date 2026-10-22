@@ -87,3 +87,17 @@ where service_type = 'Green'
 The mart has one row per zone per month, so `count(*)` would count zones.
 `sum(total_monthly_trips)` adds the trip counts of every zone into one row:
 all Green trips in October 2019.
+
+## Question 6 — FHV 2019 data load (in progress)
+
+[`load_fhv_data.py`](load_fhv_data.py) downloads the twelve
+`fhv_tripdata_2019-MM.csv.gz` files from the DataTalksClub release into a
+temporary directory and uploads them to an existing GCS bucket:
+
+```bash
+python load_fhv_data.py --bucket <your-bucket>
+```
+
+Verified on 2026-10-23: the run printed one `Uploaded` line for each month,
+01 through 12. The bucket must be in the same location as the BigQuery dataset
+so the files can be read through an external table.
