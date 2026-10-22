@@ -71,3 +71,19 @@ order by total_revenue desc;
 The question asks for a yearly total, so one result row must be one pickup
 zone. Grouping by `pickup_zone, revenue_month` instead would rank single
 zone-months, not each zone's 2020 total.
+
+## Question 5 — Green taxi trip count for October 2019
+
+**Answer: 384,624**
+
+```sql
+select sum(total_monthly_trips) as total_number_of_trips
+from `<project>.<prod_dataset>.fct_monthly_zone_revenue`
+where service_type = 'Green'
+  and extract(year from revenue_month) = 2019
+  and extract(month from revenue_month) = 10;
+```
+
+The mart has one row per zone per month, so `count(*)` would count zones.
+`sum(total_monthly_trips)` adds the trip counts of every zone into one row:
+all Green trips in October 2019.
