@@ -54,3 +54,20 @@ After this change, running `dbt build --target prod --full-refresh --select
 +fct_monthly_zone_revenue` gives 12,184 rows. Year values far outside 2019–2020
 (for example 2001 or 2088) come from bad timestamps in the source files and are
 kept.
+
+## Question 4 — Best-performing Green pickup zone in 2020
+
+**Answer: East Harlem North** (total revenue 1,817,268.95)
+
+```sql
+select pickup_zone, sum(revenue_monthly_total_amount) as total_revenue
+from `<project>.<prod_dataset>.fct_monthly_zone_revenue`
+where service_type = 'Green'
+  and extract(year from revenue_month) = 2020
+group by pickup_zone
+order by total_revenue desc;
+```
+
+The question asks for a yearly total, so one result row must be one pickup
+zone. Grouping by `pickup_zone, revenue_month` instead would rank single
+zone-months, not each zone's 2020 total.
