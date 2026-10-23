@@ -88,7 +88,7 @@ The mart has one row per zone per month, so `count(*)` would count zones.
 `sum(total_monthly_trips)` adds the trip counts of every zone into one row:
 all Green trips in October 2019.
 
-## Question 6 — FHV 2019 data load (in progress)
+## Question 6 — FHV 2019 data load and staging (in progress)
 
 [`load_fhv_data.py`](load_fhv_data.py) downloads the twelve
 `fhv_tripdata_2019-MM.csv.gz` files from the DataTalksClub release into a
@@ -101,3 +101,34 @@ python load_fhv_data.py --bucket <your-bucket>
 Verified on 2026-10-23: the run printed one `Uploaded` line for each month,
 01 through 12. The bucket must be in the same location as the BigQuery dataset
 so the files can be read through an external table.
+
+The files are registered in BigQuery as a gzip-compressed CSV external table
+and copied into a managed table:
+
+```sql
+create or replace external table `<project>.<raw_dataset>.fhv_external`
+options (
+  compression = 'GZIP',
+  format = 'CSV',
+  uris = ['gs://<your-bucket>/module-04/fhv/fhv_tripdata_2019-*.csv.gz']
+);
+
+create table `<project>.<raw_dataset>.fhv_tripdata_non_partitioned` as
+select * from `<project>.<raw_dataset>.fhv_external`;
+```
+
+File-level completeness check on the external table (`_FILE_NAME` is a
+pseudo-column available on external tables):
+
+```sql
+select _FILE_NAME as filename, count(*) as row_count
+from `<project>.<raw_dataset>.fhv_external`
+group by filename
+order by filename;
+```
+
+All 12 files returned rows, summing to 43,244,696, which equals the managed
+table's `count(*)`. January 2019 has about 23 million rows versus 1–2 million
+for later months: from February 2019 the TLC publishes high-volume for-hire
+trips (Uber, Lyft, etc.) as a separate `fhvhv` dataset, so the jump comes from
+the source and is kept.
