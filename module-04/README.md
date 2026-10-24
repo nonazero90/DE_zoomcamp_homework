@@ -88,7 +88,7 @@ The mart has one row per zone per month, so `count(*)` would count zones.
 `sum(total_monthly_trips)` adds the trip counts of every zone into one row:
 all Green trips in October 2019.
 
-## Question 6 — FHV 2019 data load and staging (in progress)
+## Question 6 — FHV 2019 data load and staging
 
 [`load_fhv_data.py`](load_fhv_data.py) downloads the twelve
 `fhv_tripdata_2019-MM.csv.gz` files from the DataTalksClub release into a
@@ -132,3 +132,24 @@ table's `count(*)`. January 2019 has about 23 million rows versus 1–2 million
 for later months: from February 2019 the TLC publishes high-volume for-hire
 trips (Uber, Lyft, etc.) as a separate `fhvhv` dataset, so the jump comes from
 the source and is kept.
+
+### Staging model
+
+[`stg_fhv_tripdata.sql`](stg_fhv_tripdata.sql) reads the managed table through
+`source('raw_data', 'fhv_tripdata_non_partitioned')`, drops rows where
+`dispatching_base_num is null`, casts types and renames columns to the
+project's lowercase convention (e.g. `PUlocationID` → `pickup_locationid`).
+One row is one FHV trip. Built with:
+
+```bash
+dbt build --select stg_fhv_tripdata --target prod
+```
+
+**Answer: 43,244,693**
+
+```sql
+select count(*)
+from `<project>.<prod_dataset>.stg_fhv_tripdata`;
+```
+
+The raw table has 43,244,696 rows, so the null filter removes 3 rows.
