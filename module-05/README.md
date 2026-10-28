@@ -49,3 +49,20 @@ materialization:
 
 On the first run the table did not exist yet, so the DELETE step failed;
 `bruin run --full-refresh` created it, and later runs are incremental.
+
+## Question 3 — Overriding a pipeline variable
+
+**Answer: `bruin run --var 'taxi_types=["yellow"]'`**
+
+`taxi_types` is declared as an array of strings, so the override must be a JSON
+array, and the flag that overrides pipeline variables is `--var`
+(`bruin run --help`).
+
+The outer single quotes matter. Without them the shell rewrites the value
+before Bruin sees it: zsh treats `[...]` as a filename pattern and fails with
+`no matches found`, and the double quotes are stripped, leaving `[yellow]`,
+which is not valid JSON.
+
+- `--taxi-types yellow` — not a Bruin flag; variables go through `--var`.
+- `--var taxi_types=yellow` — a plain string, not an array.
+- `--set taxi_types=["yellow"]` — wrong flag, and unquoted for the shell.
