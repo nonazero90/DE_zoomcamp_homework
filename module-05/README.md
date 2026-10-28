@@ -79,3 +79,43 @@ transitively (`bruin run --help`). In this pipeline that is
 - `--all` and `--recursive` are not `bruin run` flags.
 - `--select` is not a flag either; the dbt-style option is `--selector`, and it
   is spelled differently from the answer option.
+
+## Question 5 — Quality check for NULLs
+
+**Answer: `not_null`**
+
+Already used on `pickup_datetime` in `pipeline/assets/staging/trips.sql`:
+
+```yaml
+columns:
+  - name: pickup_datetime
+    type: timestamp
+    primary_key: true
+    checks:
+      - name: not_null
+```
+
+`unique` checks for duplicates and `positive` checks for values > 0; neither
+rejects NULLs.
+
+## Question 6 — Viewing the dependency graph
+
+**Answer: `bruin lineage`**
+
+```text
+$ bruin lineage pipeline/assets/ingestion/trips.py
+Downstream Dependencies
+- staging.trips (assets/staging/trips.sql)
+```
+
+By default only direct dependencies are listed; `--full` includes transitive
+ones such as `reports.trips_report`.
+
+## Question 7 — First run on a new database
+
+**Answer: `--full-refresh`**
+
+On a new DuckDB file, `staging.trips` (strategy `time_interval`) failed on the
+first run because its DELETE step targets a table that does not exist yet.
+`bruin run --full-refresh` builds every table from scratch; later runs are
+incremental.
