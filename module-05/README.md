@@ -25,3 +25,27 @@ my-pipeline/
         ├── staging/
         └── reports/
 ```
+
+## Question 2 — Materialization strategy
+
+**Answer: `time_interval`**
+
+Each run should replace only the rows whose `pickup_datetime` falls in the
+requested interval and leave every other month untouched.
+
+- `append` never deletes, so re-running a month duplicates its rows.
+- `replace` truncates the whole table, losing months outside the interval.
+- `view` stores no data at all.
+
+Verified against `pipeline/assets/staging/trips.sql`:
+
+```yaml
+materialization:
+  type: table
+  strategy: time_interval        # delete the interval, then insert it again
+  incremental_key: pickup_datetime   # column that defines the interval
+  time_granularity: timestamp
+```
+
+On the first run the table did not exist yet, so the DELETE step failed;
+`bruin run --full-refresh` created it, and later runs are incremental.
