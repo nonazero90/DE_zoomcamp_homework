@@ -66,3 +66,16 @@ which is not valid JSON.
 - `--taxi-types yellow` — not a Bruin flag; variables go through `--var`.
 - `--var taxi_types=yellow` — a plain string, not an array.
 - `--set taxi_types=["yellow"]` — wrong flag, and unquoted for the shell.
+
+## Question 4 — Running an asset and everything downstream
+
+**Answer: `bruin run ingestion/trips.py --downstream`**
+
+`bruin run` takes a path (an asset file or a pipeline directory), and
+`--downstream` also runs every asset that depends on it, directly or
+transitively (`bruin run --help`). In this pipeline that is
+`ingestion.trips` → `staging.trips` → `reports.trips_report`.
+
+- `--all` and `--recursive` are not `bruin run` flags.
+- `--select` is not a flag either; the dbt-style option is `--selector`, and it
+  is spelled differently from the answer option.
