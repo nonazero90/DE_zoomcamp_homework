@@ -19,6 +19,36 @@ spark.version   # '4.2.1'
 
 The same version is shown in the `pyspark` shell banner.
 
+## Question 2 — Average parquet file size after repartition
+
+**Answer: `25MB`**
+
+Downloaded the November 2025 Yellow trip data, read it into a DataFrame,
+split it into 4 partitions and wrote it out:
+
+```python
+df = spark.read.parquet("yellow_tripdata_2025-11.parquet")
+df = df.repartition(4)          # lazy: nothing runs until the write
+df.write.mode("overwrite").parquet("yellow_tripdata_2025_11")
+```
+
+```text
+$ ls -lh yellow_tripdata_2025_11
+_SUCCESS
+part-00000-...-c000.snappy.parquet   24M
+part-00001-...-c000.snappy.parquet   24M
+part-00002-...-c000.snappy.parquet   24M
+part-00003-...-c000.snappy.parquet   24M
+```
+
+Four `.parquet` files, one per partition, each about 24 MiB (about 25.6 MB);
+`_SUCCESS` and the hidden `.crc` checksum files are not counted.
+
+Check: without `repartition`, the same write also produced four files of about
+21M, because Spark had already split the input into four partitions by
+default. Matching the file count alone does not prove the step ran; the
+consecutive part numbers and changed sizes do.
+
 ## Question 5 — Spark UI port
 
 **Answer: `4040`**
