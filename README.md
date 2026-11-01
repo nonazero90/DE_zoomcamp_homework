@@ -9,8 +9,10 @@ Public, reproducible solutions and verification artifacts from the
 - [Module 2 — Workflow Orchestration](module-02/README.md)
 - [Module 3 — Data Warehousing and BigQuery](module-03/README.md)
 - [Module 4 — Analytics Engineering with dbt](module-04/README.md)
+- [Module 5 — Data Platforms with Bruin](module-05/README.md)
+- [Module 6 — Batch Processing with Spark](module-06/README.md)
 
-Module 5 and later work will be added incrementally as each verified homework
+Module 6 and later work will be added incrementally as each verified homework
 milestone is completed.
 
 ## Repository boundaries
