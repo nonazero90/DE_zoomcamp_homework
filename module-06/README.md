@@ -57,7 +57,7 @@ Renamed `tpep_pickup_datetime` to `pickup_datetime`, registered the DataFrame
 as a temp view and counted trips by pickup date:
 
 ```python
-df.createOrReplaceTempView("yellow_trips_data_2025_11")
+df_yellow.createOrReplaceTempView("yellow_trips_data_2025_11")
 
 spark.sql("""
 SELECT
