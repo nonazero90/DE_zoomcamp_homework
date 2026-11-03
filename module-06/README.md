@@ -73,6 +73,36 @@ WHERE
 Comparing the raw timestamp to `DATE '2025-11-15'` matches only trips at exactly
 `00:00:00` (10 rows), and `date_trunc` returns a timestamp, not a day number.
 
+## Question 4 — Longest trip in hours
+
+**Answer: `90.6`**
+
+Also renamed `tpep_dropoff_datetime` to `dropoff_datetime`. Computed each trip's
+duration in minutes, took the maximum and converted it to hours:
+
+```python
+spark.sql("""
+SELECT
+    MAX(timestampdiff(MINUTE, pickup_datetime, dropoff_datetime)) / 60 AS hours
+FROM
+    yellow_trips_data_2025_11
+""").show()
+```
+
+```text
++-----------------+
+|            hours|
++-----------------+
+|90.63333333333334|
++-----------------+
+```
+
+Subtracting the two timestamps directly returns an `INTERVAL`, not a number, so
+`timestampdiff` is used instead. Using `HOUR` as the unit would truncate to a
+whole number, so the difference is taken in minutes and divided by 60.
+`timestampdiff` is parser syntax: it does not appear in `SHOW FUNCTIONS` or the
+SQL built-in functions page, but it works in `spark.sql`.
+
 ## Question 5 — Spark UI port
 
 **Answer: `4040`**
