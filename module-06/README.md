@@ -103,6 +103,47 @@ whole number, so the difference is taken in minutes and divided by 60.
 `timestampdiff` is parser syntax: it does not appear in `SHOW FUNCTIONS` or the
 SQL built-in functions page, but it works in `spark.sql`.
 
+## Question 6 — Least frequent pickup zone
+
+**Answer: `Governor's Island/Ellis Island/Liberty Island`** (tied; see below)
+
+Loaded the zone lookup CSV (with `header=true`) as a second temp view and joined
+it to the trips on the pickup location ID:
+
+```python
+df_zone.createOrReplaceTempView("taxi_zone_lookup")
+
+spark.sql("""
+SELECT
+    y.PULocationID,
+    z.Zone,
+    COUNT(*) AS pickup_times
+FROM
+    yellow_trips_data_2025_11 AS y
+JOIN taxi_zone_lookup AS z
+    ON y.PULocationID = z.LocationID
+GROUP BY y.PULocationID, z.Zone
+ORDER BY pickup_times
+""").show()
+```
+
+```text
++------------+--------------------+------------+
+|PULocationID|                Zone|pickup_times|
++------------+--------------------+------------+
+|          84|Eltingville/Annad...|           1|
+|           5|       Arden Heights|           1|
+|         105|Governor's Island...|           1|
+|         187|       Port Richmond|           3|
+...
+```
+
+One output row is one pickup zone. Three zones tie at a single pickup, and two
+of them (Governor's Island and Arden Heights) are answer options; the homework
+accepts any correct one. `ORDER BY` alone does not break ties, so the row order
+among them is not guaranteed. The inner join only counts zones that have at
+least one pickup, so zones with zero pickups never appear.
+
 ## Question 5 — Spark UI port
 
 **Answer: `4040`**
